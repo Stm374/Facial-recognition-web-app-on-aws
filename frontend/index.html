@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facial Recognition App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Upload Image for Recognition</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Upload</button>
+    <pre id="result"></pre>
+
+<script>
+const API_URL = "YOUR_API_GATEWAY_URL";
+
+function uploadImage() {
+    const file = document.getElementById('fileInput').files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        fetch(API_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({image_base64: e.target.result.split(',')[1]})
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            document.getElementById('result').innerText = "Error: " + err;
+        });
+    };
+    reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
